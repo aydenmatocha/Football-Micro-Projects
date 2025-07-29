@@ -3,6 +3,8 @@
 Small, visual-first football analytics projects using R.
 
 ## 📂 NFL Projects
+### 2025
+### 2024
 - [TE Blocking vs Receiving Grade](nfl/te_blocking_vs_receiving_grade.R)
 - [Test](nfl/wr_separation_vs_target_share.R)
 
