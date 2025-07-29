@@ -2,6 +2,9 @@
 
 Small, visual-first football analytics projects using R.
 
+## 📊 Visuals
+Plots used on [@Matochalytics](https://twitter.com/Matochalytics)
+
 ## 📂 NFL Projects
 ### 2025
 - [RB Rushing vs Pass Blocking Grade](nfl/te_blocking_vs_receiving_grade.R)
@@ -14,6 +17,3 @@ Small, visual-first football analytics projects using R.
 ### 2025
 - [Test](college/2024_p5_qbs_epa_vs_ayards.R)
 - [Test](college/freshman_rb_performance_trends.R)
-
-## 📊 Visuals
-Plots used on [@Matochalytics](https://twitter.com/Matochalytics)
