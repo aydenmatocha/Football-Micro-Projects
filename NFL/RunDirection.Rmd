@@ -1,0 +1,78 @@
+---
+title: "Run Direction 11/11/2024"
+output: html_notebook
+---
+
+```{r}
+library(tidyverse)
+library(ggrepel)
+library(nflfastR)
+library(nflplotR)
+```
+
+grab pbp data
+```{r}
+data <- load_pbp(2024)
+```
+
+Left Run Statistics:
+```{r}
+left_run <- data %>% 
+  filter(posteam == "LAC", rush == 1, down <= 4, play_type == "run") %>% 
+  group_by(rusher) %>% 
+  summarize(
+    left_run_percentage = mean(run_location == "left", na.rm = TRUE) * 100,
+    mean_epa = mean(ifelse(run_location == "left", epa, NA), na.rm = TRUE),
+    success_rate = mean(ifelse(run_location == "left", success, NA), na.rm = TRUE),
+    ypc = mean(ifelse(run_location == "left", yards_gained, NA), na.rm = TRUE),
+    plays = sum(run_location == "left", na.rm = TRUE),
+    long = max(ifelse(run_location == "left", yards_gained, NA), na.rm = TRUE)
+  ) %>% 
+  filter(plays >= 3) %>% 
+  arrange(-mean_epa) %>% 
+  mutate(across(where(is.numeric), round, 3))
+
+left_run
+```
+
+
+Right run statistics:
+```{r}
+right_run <- data %>% 
+  filter(posteam == "LAC", rush == 1, down <= 4, play_type == "run") %>% 
+  group_by(rusher) %>% 
+  summarize(
+    right_run_percentage = mean(run_location == "right", na.rm = TRUE) * 100,
+    mean_epa = mean(ifelse(run_location == "right", epa, NA), na.rm = TRUE),
+    success_rate = mean(ifelse(run_location == "right", success, NA), na.rm = TRUE),
+    ypc = mean(ifelse(run_location == "right", yards_gained, NA), na.rm = TRUE),
+    plays = sum(run_location == "right", na.rm = TRUE),
+    long = max(ifelse(run_location == "right", yards_gained, NA), na.rm = TRUE)
+  ) %>% 
+  filter(plays >= 3) %>% 
+  arrange(-mean_epa) %>% 
+  mutate(across(where(is.numeric), round, 3))
+
+right_run
+```
+
+Middle run statistics:
+```{r}
+middle_run <- data %>% 
+  filter(posteam == "LAC", rush == 1, down <= 4, play_type == "run") %>% 
+  group_by(rusher) %>% 
+  summarize(
+    middle_run_percentage = mean(run_location == "middle", na.rm = TRUE) * 100,
+    mean_epa = mean(ifelse(run_location == "middle", epa, NA), na.rm = TRUE),
+    success_rate = mean(ifelse(run_location == "middle", success, NA), na.rm = TRUE),
+    ypc = mean(ifelse(run_location == "middle", yards_gained, NA), na.rm = TRUE),
+    plays = sum(run_location == "middle", na.rm = TRUE),
+    long = max(ifelse(run_location == "middle", yards_gained, NA), na.rm = TRUE)
+  ) %>% 
+  filter(plays >= 3) %>% 
+  arrange(-mean_epa) %>% 
+  mutate(across(where(is.numeric), round, 3))
+
+middle_run
+```
+
