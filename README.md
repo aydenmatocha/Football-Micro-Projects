@@ -6,7 +6,7 @@ Small, visual-first football analytics projects using R.
 Plots used on [@Matochalytics](https://twitter.com/Matochalytics).
 
 ## 🌐 Portfolio  
-Explore these projects and more on my <a href="https://aydenmatocha.github.io/projects" target="_blank">portfolio</a>.
+Explore these projects and more on my [portfolio](https://aydenmatocha.github.io/projects).
 
 ## 📂 NFL Projects
 ### 2025
