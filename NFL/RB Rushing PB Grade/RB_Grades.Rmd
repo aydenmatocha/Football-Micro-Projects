@@ -1,0 +1,34 @@
+---
+title: "RB Rushing and Pass Blocking"
+output:
+  html_document:
+    df_print: paged
+---
+
+```{r}
+RB_Grades <- read.csv("RB_Grades.csv")
+library(ggplot2)
+library(ggrepel)
+library(nflplotR)
+library(tidyverse)
+```
+
+```{r}
+str(RB_Grades)
+```
+
+
+
+Change to RB grades
+```{r}
+mean_grades_RB <- mean(RB_Grades$Run_Grade+RB_Grades$PB_Grade)
+tier_values_RB <- c(mean_grades_RB-30, mean_grades_RB-20, mean_grades_RB-10, mean_grades_RB, mean_grades_RB+10, mean_grades_RB+20, mean_grades_RB+30)
+
+RB_Grades_Plot <- RB_Grades %>% ggplot(aes(x=Run_Grade, y=PB_Grade)) + geom_vline(xintercept = mean(RB_Grades$Run_Grade), color = "red", linetype = "dashed") + geom_hline(yintercept = mean(RB_Grades$PB_Grade), color = "red", linetype = "dashed") + geom_text_repel(aes(label = Name), vjust = -0.5, hjust = 0.5, size = 2, max.overlaps = 20) + scale_size_continuous(range = c(2, 4)) + geom_nfl_logos(aes(team_abbr = Team), width = 0.02) +
+lapply(tier_values_RB, function(value) {
+    geom_abline(intercept = value, slope = -1, color = "blue", linetype = "dotted")
+  }) +
+ ylab("Pass Block Grade") + xlab("Rushing Grade") + labs(caption = "Data: PFF") + theme(plot.caption = element_text(size = 10, hjust = 1, vjust = 1, color = "gray40"))
+RB_Grades_Plot
+```
+
