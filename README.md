@@ -7,8 +7,8 @@ Plots used on [@Matochalytics](https://twitter.com/Matochalytics)
 
 ## 📂 NFL Projects
 ### 2025
-- [RB Rushing vs Pass Blocking Grade](NFL/RB Rushing PB Grade)
-- [TE Run Blocking vs Receiving Grade](NFL/TE Receiving Blocking Grade)
+- [RB Rushing vs Pass Blocking Grade](NFL/RB-Rushing-PB-Grade)
+- [TE Run Blocking vs Receiving Grade](NFL/TE-Receiving-Blocking-Grade)
 ### 2024
 - [Receiving Grade vs YPRR in Man](NFL/WR-Grade-YPRR-Man)
 - [Chargers Run Direction (11/11/2024)](NFL/ChargersRunDirection_2024)
