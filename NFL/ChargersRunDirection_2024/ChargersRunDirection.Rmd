@@ -1,6 +1,8 @@
 ---
 title: "Run Direction 11/11/2024"
-output: html_notebook
+output:
+  html_document:
+    df_print: paged
 ---
 
 ```{r}

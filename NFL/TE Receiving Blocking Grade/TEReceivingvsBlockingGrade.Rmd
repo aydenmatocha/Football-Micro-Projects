@@ -1,0 +1,29 @@
+---
+title: "TE Receiving and Blocking"
+output:
+  html_document:
+    df_print: paged
+---
+
+```{r}
+TE_Grades <- read.csv("TE_Grades2.csv")
+library(ggplot2)
+library(ggrepel)
+library(nflplotR)
+library(tidyverse)
+```
+
+plot the receiving grade vs run blocking grade (minimum 500 snaps)
+```{r}
+mean_grades <- mean(TE_Grades$Receiving_Grade+TE_Grades$Run_Block_Grade)
+tier_values <- c(mean_grades-30, mean_grades-20, mean_grades-10, mean_grades, mean_grades+10, mean_grades+20, mean_grades+30)
+
+TE_Grades_Plot <- TE_Grades %>% ggplot(aes(x=Receiving_Grade, y=Run_Block_Grade)) + geom_vline(xintercept = mean(TE_Grades$Receiving_Grade), color = "red", linetype = "dashed") + geom_hline(yintercept = mean(TE_Grades$Run_Block_Grade), color = "red", linetype = "dashed") + geom_text_repel(aes(label = Name), vjust = -0.5, hjust = 0.5, size = 2, max.overlaps = 20) + scale_size_continuous(range = c(2, 4)) + geom_nfl_logos(aes(team_abbr = Team), width = 0.02) +
+lapply(tier_values, function(value) {
+    geom_abline(intercept = value, slope = -1, color = "blue", linetype = "dotted")
+  }) +
+ ylab("Run Block Grade") + xlab("Receiving Grade") + labs(caption = "Data: PFF") + theme(plot.caption = element_text(size = 10, hjust = 1, vjust = 1, color = "gray40"))
+TE_Grades_Plot
+```
+
+

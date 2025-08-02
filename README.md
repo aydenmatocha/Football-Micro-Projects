@@ -10,8 +10,8 @@ Plots used on [@Matochalytics](https://twitter.com/Matochalytics)
 - [RB Rushing vs Pass Blocking Grade](nfl/te_blocking_vs_receiving_grade.R)
 - [TE Run Blocking vs Receiving Grade](nfl/te_blocking_vs_receiving_grade.R)
 ### 2024
-- [Receiving Grade vs YPRR in Man](nfl/WRGradevsYPRRMan)
-- [Chargers Run Direction (11/11/2024)](NFL/ChargersRunDirection.nb.html)
+- [Receiving Grade vs YPRR in Man](nfl/WRGradevsYPRRMan.html)
+- [Chargers Run Direction (11/11/2024)](NFL/ChargersRunDirection_2024)
 
 ## 📂 College Football + Draft Projects
 ### 2025
