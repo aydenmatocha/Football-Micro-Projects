@@ -1,0 +1,83 @@
+---
+title: "NFL Team Statistics With/Without QB"
+author: "Ayden Matocha"
+date: "7/25/2025"
+output:
+  html_document:
+    toc: TRUE
+---
+
+# Load Packages
+```{r}
+library(tidyverse)
+library(nflreadr)
+library(DT)
+```
+
+# Load Play-by-Play Data
+```{r}
+pbp_2021 <- load_pbp(2021:2024)
+pbp_2023 <- load_pbp(2023:2024)
+```
+
+# Get All Quarterbacks
+```{r}
+roster <- load_rosters(2020:2024)
+
+real_qbs_id <- roster %>%
+  filter(position == "QB") %>%
+  distinct(gsis_id)
+qb_id <- real_qbs_id$gsis_id
+```
+
+# Create compare_qbs Function
+```{r}
+compare_qbs <- function(pbp_data, team_abbr, starter_name) {
+
+  starter <- pbp_data %>%
+    filter(posteam == team_abbr,
+           passer_player_id %in% qb_id,
+           passer_player_name == starter_name) %>%
+    group_by(posteam) %>%
+    summarize(
+      s_db = n(),
+      s_mean_epa = round(mean(epa, na.rm = TRUE), 3),
+      s_suc_rate = round(mean(success == 1, na.rm = TRUE), 3)
+    )
+
+  others <- pbp_data %>%
+    filter(posteam == team_abbr,
+           passer_player_id %in% qb_id,
+           passer_player_name != starter_name) %>%
+    group_by(posteam) %>%
+    summarize(
+      o_db = n(),
+      o_mean_epa = round(mean(epa, na.rm = TRUE), 3),
+      o_suc_rate = round(mean(success == 1, na.rm = TRUE), 3)
+    )
+
+  combined <- starter %>%
+    left_join(others, by = "posteam") %>%
+    mutate(Starter = starter_name, 
+           epa_diff = s_mean_epa - o_mean_epa,
+           suc_diff = round(s_suc_rate - o_suc_rate, 3)) %>%
+    rename(Team = posteam) %>%
+    select(Starter, Team, everything())
+  
+  return(combined)
+}
+```
+
+# Print Results
+```{r}
+results <- bind_rows(
+  compare_qbs(pbp_2021, "CIN", "J.Burrow"),
+  compare_qbs(pbp_2021, "MIA", "T.Tagovailoa"),
+  compare_qbs(pbp_2021, "LAC", "J.Herbert"),
+  compare_qbs(pbp_2023, "GB", "J.Love"),
+  compare_qbs(pbp_2021, "PHI", "J.Hurts")
+)
+
+datatable(results)
+```
+
