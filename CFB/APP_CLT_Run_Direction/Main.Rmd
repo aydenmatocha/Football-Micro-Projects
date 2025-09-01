@@ -1,0 +1,63 @@
+---
+title: "APP Runs on Downs vs CLT"
+author: "Ayden Matocha"
+date: "8/31/2025"
+output:
+  html_document:
+    toc: TRUE
+---
+
+Cant complete cause data hasn't been uploaded yet or wont be at all FML
+
+# Load Packages
+```{r}
+library(cfbfastR)
+library(tidyverse)
+```
+
+# Load Play-by-Play Data
+```{r}
+pbp <- load_cfb_pbp(2025)
+```
+
+# Grab Data From APP vs CLT
+```{r}
+pbp_app_clt <- pbp %>% filter(pos_team == "App State", def_pos_team == "Charlotte")
+```
+
+```{r}
+run_1 <- pbp_app_clt %>% 
+  filter(pos_team == "App State", (rush == 1 | pass == 1)) %>% 
+  mutate(
+    play_group = case_when(
+      rush == 1 ~ "Rush",
+      pass == 1 ~ "Pass"
+    )
+  ) %>% 
+  group_by(play_group) %>% 
+  summarize(
+    plays = n(),
+    mean_epa = mean(EPA, na.rm = TRUE),
+    success_rate = mean(success, na.rm = TRUE),
+    ypc = mean(yards_gained, na.rm = TRUE),
+  ) %>% 
+  arrange(-mean_epa) %>% 
+  mutate(across(where(is.numeric), round, 3))
+
+run_1
+```
+
+```{r}
+unique(pbp$pos_team)
+```
+```{r}
+pbp_app_clt %>% 
+  filter(rush == 1 | pass == 1) %>% 
+  count(pos_team)
+```
+```{r}
+pbp_app_clt %>%
+  select(game_id, offense_play, defense_play, play_type, play_text) %>%
+  slice(1:10)
+```
+

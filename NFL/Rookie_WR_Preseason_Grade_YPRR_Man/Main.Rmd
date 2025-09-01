@@ -1,0 +1,26 @@
+---
+title: "2025 Preseason Rookie WR Grade vs YPRR Against Man"
+author: "Ayden Matocha"
+date: "8/31/2025"
+output:
+  html_document:
+    toc: TRUE
+---
+
+# Load Packages and CSV
+Since PFF won't allow me to filter rookies, I am forced to fill in a csv manually
+Only added players with >= 4 man targets
+```{r}
+receiving_scheme <- read.csv("receiving_scheme.csv")
+library(ggplot2)
+library(ggrepel)
+library(nflplotR)
+library(tidyverse)
+```
+
+# Plot The Data
+```{r}
+plot <- receiving_scheme %>% ggplot(aes(x=man_grade, y=man_yprr)) + geom_vline(xintercept = mean(ifelse(receiving_scheme$position == "WR" & receiving_scheme$man_tgt >= 4, receiving_scheme$man_grade, NA), na.rm = TRUE), color = "red", linetype = "dashed") + geom_hline(yintercept = mean(ifelse(receiving_scheme$position == "WR" & receiving_scheme$man_tgt >= 4, receiving_scheme$man_yprr, NA), na.rm = TRUE), color = "red", linetype = "dashed") + geom_text_repel(aes(label = player), vjust = -0.5, hjust = 0.5, size = 2, max.overlaps = 20) + scale_size_continuous(range = c(2, 4)) + geom_nfl_logos(aes(team_abbr = team), width = 0.02) + ylab("YPRR vs Man") + xlab("Receiving Grade vs Man (PFF)") + labs(caption = "Data: PFF") + theme(plot.caption = element_text(size = 10, hjust = 1, vjust = 1, color = "gray40"))
+plot
+```
+
