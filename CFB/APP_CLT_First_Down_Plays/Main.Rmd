@@ -1,13 +1,11 @@
 ---
-title: "APP Runs on Downs vs CLT"
+title: "APP First Down Play Type vs CLT"
 author: "Ayden Matocha"
-date: "8/31/2025"
+date: "9/3/2025"
 output:
   html_document:
     toc: TRUE
 ---
-
-Cant complete cause data hasn't been uploaded yet or wont be at all FML
 
 # Load Packages
 ```{r}
@@ -25,39 +23,26 @@ pbp <- load_cfb_pbp(2025)
 pbp_app_clt <- pbp %>% filter(pos_team == "App State", def_pos_team == "Charlotte")
 ```
 
+# Get First Down Play Types and Statistics
 ```{r}
-run_1 <- pbp_app_clt %>% 
-  filter(pos_team == "App State", (rush == 1 | pass == 1)) %>% 
+down1 <- pbp_app_clt %>% 
+  filter(pos_team == "App State", (rush == 1 | pass == 1), down == 1) %>% 
   mutate(
-    play_group = case_when(
+    play_type = case_when(
       rush == 1 ~ "Rush",
       pass == 1 ~ "Pass"
     )
   ) %>% 
-  group_by(play_group) %>% 
+  group_by(play_type) %>% 
   summarize(
     plays = n(),
     mean_epa = mean(EPA, na.rm = TRUE),
     success_rate = mean(success, na.rm = TRUE),
-    ypc = mean(yards_gained, na.rm = TRUE),
+    ypa = mean(yards_gained, na.rm = TRUE),
   ) %>% 
   arrange(-mean_epa) %>% 
   mutate(across(where(is.numeric), round, 3))
 
-run_1
-```
-
-```{r}
-unique(pbp$pos_team)
-```
-```{r}
-pbp_app_clt %>% 
-  filter(rush == 1 | pass == 1) %>% 
-  count(pos_team)
-```
-```{r}
-pbp_app_clt %>%
-  select(game_id, offense_play, defense_play, play_type, play_text) %>%
-  slice(1:10)
+down1
 ```
 
