@@ -1,0 +1,33 @@
+---
+title: "QBs Pressured vs Clean Grade Week 1"
+author: "Ayden Matocha"
+date: "9/3/2025"
+output:
+  html_document:
+    toc: TRUE
+---
+
+# Load Packages
+```{r}
+library(tidyverse)
+library(cfbplotR)
+library(ggplot2)
+library(ggrepel)
+library(cfbfastR)
+```
+
+# Read CSV
+```{r}
+passing_pressure <- read.csv("passing_pressure.csv")
+```
+
+# Get Wanted Variables
+Minimum 30 base dropbacks
+```{r}
+passing_pressure <- passing_pressure %>% select(player, team_name, base_dropbacks, blitz_grades_pass, no_blitz_grades_pass) %>% filter (base_dropbacks >= 30)
+```
+
+```{r}
+plot <- passing_pressure %>% ggplot(aes(x=no_blitz_grades_pass, y=blitz_grades_pass)) + geom_vline(xintercept = mean(ifelse(passing_pressure$base_dropbacks >= 30, passing_pressure$no_blitz_grades_pass, NA), na.rm = TRUE), color = "red", linetype = "dashed") + geom_hline(yintercept = mean(ifelse(passing_pressure$base_dropbacks >= 30, passing_pressure$blitz_grades_pass, NA), na.rm = TRUE), color = "red", linetype = "dashed") + geom_text_repel(aes(label = player), vjust = -0.7, hjust = 0.7, size = 2, max.overlaps = 20) + scale_size_continuous(range = c(2, 4)) + geom_cfb_logos(aes(team = team_name), width = 0.02) + ylab("Passing Grade Under Pressure") + xlab("Passing Grade in Clean Pocket") + labs(caption = "Data: PFF") + theme(plot.caption = element_text(size = 10, hjust = 1, vjust = 1, color = "gray40"))
+plot
+```

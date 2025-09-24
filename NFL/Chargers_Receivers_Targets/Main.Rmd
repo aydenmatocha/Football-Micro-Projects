@@ -1,0 +1,106 @@
+---
+title: "Chargers Stats When Targeting Receiver"
+author: "Ayden Matocha"
+date: "9/23/2025"
+output:
+  html_document:
+    toc: TRUE
+---
+
+# Load Packages
+```{r}
+library(tidyverse)
+library(nflfastR)
+library(formattable)
+library(circlize)
+```
+
+# Load Play-By-Play
+```{r}
+pbp <- load_pbp(2025)
+```
+
+
+# Get Receivers
+```{r}
+receivers <- c("L.McConkey", "K.Allen", "Q.Johnston", "T.Harris", "W.Dissly", "T.Conklin", "O.Gadsden", "O.Hampton")
+```
+
+# Create Receiver Data Function
+```{r}
+get_receiver_data <- function(receiver_input, pbp) {
+  receiver_data <- pbp %>%
+    filter(posteam == "LAC", receiver_player_name == receiver_input) %>%
+    group_by(receiver_player_name) %>%
+    summarize(targets = n(), mean_epa = round(mean(epa, na.rm = TRUE), 3), suc_rate = round(mean(success == 1, na.rm = TRUE), 3)) %>%
+    mutate(receiver = receiver_player_name) %>%
+    select(receiver, targets, mean_epa, suc_rate)
+  
+  return(receiver_data)
+}
+```
+
+# Get Results
+```{r}
+results <- tibble()
+for (receiver in receivers) {
+  print(receiver)
+  results <- bind_rows(results, get_receiver_data(receiver, pbp))
+}
+results <- results %>% arrange(-mean_epa)
+```
+
+
+# Calculate League Data
+```{r}
+target_data <- pbp %>%
+  filter(pass == 1, !is.na(receiver_player_name))
+
+epaQ1 <- quantile(target_data$epa, probs = 0.25)
+epaMean <- mean(target_data$epa)
+epaQ3 <- quantile(target_data$epa, probs = 0.75)
+
+successQ1 <- quantile(target_data$success, probs = 0.25)
+successMean <- mean(target_data$success)
+successQ3 <- quantile(target_data$success, probs = 0.75)
+```
+
+# Format Data and Print
+```{r}
+epa_ramp <- colorRamp2(
+  breaks = c(epaQ1, epaMean, epaQ3),
+  colors = c("red", "white", "green")
+)
+
+success_ramp <- colorRamp2(
+  breaks = c(successQ1, successMean, successQ3),
+  colors = c("red", "white", "green")
+)
+
+formattable(results, list(
+  mean_epa = formatter(
+    "span",
+    style = ~ style(
+      display = "inline-block",
+      width = "70px",
+      padding = "0 4px",
+      `border-radius` = "4px",
+      `background-color` = epa_ramp(mean_epa),
+      `text-align` = "center"
+    )
+  ),
+  suc_rate = formatter(
+    "span",
+    style = ~ style(
+      display = "inline-block",
+      width = "60px",
+      padding = "0 4px",
+      `border-radius` = "4px",
+      `background-color` = success_ramp(suc_rate),
+      `text-align` = "center"
+    )
+  )
+))
+```
+
+

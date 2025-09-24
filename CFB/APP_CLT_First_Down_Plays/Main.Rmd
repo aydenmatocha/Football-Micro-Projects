@@ -11,6 +11,7 @@ output:
 ```{r}
 library(cfbfastR)
 library(tidyverse)
+library(DT)
 ```
 
 # Load Play-by-Play Data
@@ -43,6 +44,6 @@ down1 <- pbp_app_clt %>%
   arrange(-mean_epa) %>% 
   mutate(across(where(is.numeric), round, 3))
 
-down1
+datatable(down1)
 ```
 
