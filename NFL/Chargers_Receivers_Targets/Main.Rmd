@@ -44,7 +44,6 @@ get_receiver_data <- function(receiver_input, pbp) {
 ```{r}
 results <- tibble()
 for (receiver in receivers) {
-  print(receiver)
   results <- bind_rows(results, get_receiver_data(receiver, pbp))
 }
 results <- results %>% arrange(-mean_epa)

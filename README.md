@@ -6,10 +6,13 @@ Small, visual-first football analytics projects using R.
 Plots used on [@Matochalytics](https://twitter.com/Matochalytics).
 
 ## 🌐 Portfolio  
-Explore these projects and more on my [portfolio](https://aydenmatocha.github.io/projects).
+Explore these projects and more on my [portfolio](https://aydenmatocha.github.io/smallprojects).
 
 ## 📂 NFL Projects
 ### 2025
+- [Chargers Receivers Target Stats](NFL/Chargers_Receivers_Targets)
+- [2025 Preseason Rookie WR Grade vs YPRR Against Man](NFL/Rookie_WR_Preseason_Grade_YPRR_Man)
+- [2020 Draft QBs vs Backups](NFL/2020_QBS_Starter_vs_backups)
 - [RB Rushing vs Pass Blocking Grade](NFL/RB-Rushing-PB-Grade)
 - [TE Run Blocking vs Receiving Grade](NFL/TE-Receiving-Blocking-Grade)
 ### 2024
@@ -18,5 +21,5 @@ Explore these projects and more on my [portfolio](https://aydenmatocha.github.io
 
 ## 📂 College Football + Draft Projects
 ### 2025
-- [Test](college/2024_p5_qbs_epa_vs_ayards.R)
-- [Test](college/freshman_rb_performance_trends.R)
+- [FBS QB Pressure vs Clean Grade Week 1](CFB/QB_Pressure_Clean_Week1)
+- [APP 1st Down Plays vs CLT](CFB/APP_CLT_First_Down_Plays)

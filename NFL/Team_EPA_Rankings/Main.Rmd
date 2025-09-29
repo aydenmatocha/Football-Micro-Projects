@@ -1,0 +1,109 @@
+---
+title: "NFL Team EPA Rankings"
+author: "Ayden Matocha"
+date: "9/24/2025"
+output:
+  html_document:
+    toc: TRUE
+---
+
+# Load Packages
+```{r}
+library(tidyverse)
+library(nflfastR)
+library(formattable)
+library(circlize)
+library(DT)
+```
+
+# Load Play-By-Play
+```{r}
+pbp <- load_pbp(2025)
+```
+
+```{r}
+get_team_data <- function(team_input, pbp) {
+  # Get offensive rush epa
+  off_rush <- pbp %>% 
+    filter(posteam == team_input, rush == 1) %>%
+    group_by(posteam) %>%
+    summarize(o_r_epa = round(mean(epa, na.rm = TRUE), 3)) %>%
+    rename(team = posteam)
+  
+  # Get offensive pass epa
+  off_pass <- pbp %>% 
+    filter(posteam == team_input, pass == 1) %>%
+    group_by(posteam) %>%
+    summarize(o_p_epa = round(mean(epa, na.rm = TRUE), 3)) %>%
+    select(o_p_epa)
+  
+  # Get defensive rush epa
+  def_rush <- pbp %>% 
+    filter(defteam == team_input, rush == 1) %>%
+    group_by(defteam) %>%
+    summarize(d_r_epa = round(mean(epa, na.rm = TRUE), 3)) %>%
+    select(d_r_epa)
+  
+  # Get defensive pass epa
+  def_pass <- pbp %>% 
+    filter(defteam == team_input, pass == 1) %>%
+    group_by(defteam) %>%
+    summarize(d_p_epa = round(mean(epa, na.rm = TRUE), 3)) %>%
+    select(d_p_epa)
+  
+  result <- cbind(off_rush, off_pass, def_rush, def_pass)
+  return(result)
+}
+```
+
+
+```{r}
+teams <- unique(na.omit(pbp$posteam))
+
+team_results <- tibble()
+for (i in teams) {
+  team_results <- bind_rows(team_results, get_team_data(i, pbp))
+}
+
+ranks <- team_results %>%
+  arrange(-o_r_epa) %>%
+  mutate(o_r_rank = row_number()) %>%
+  arrange(-o_p_epa) %>%
+  mutate(o_p_rank = row_number()) %>%
+  arrange(d_r_epa) %>%
+  mutate(d_r_rank = row_number()) %>%
+  arrange(d_p_epa) %>%
+  mutate(d_p_rank = row_number(), 
+    avg_rank = round((o_r_rank+o_p_rank+d_r_rank+d_p_rank) / 4, 1)) %>%
+  arrange(avg_rank)
+  
+datatable(ranks)
+```
+
+```{r}
+pbp2024 <- load_pbp(2024)
+
+teams <- unique(na.omit(pbp$posteam))
+
+team_results_2024 <- tibble()
+for (i in teams) {
+  team_results_2024 <- bind_rows(team_results_2024, get_team_data(i, pbp2024))
+}
+
+ranks_2024 <- team_results_2024 %>%
+  arrange(-o_r_epa) %>%
+  mutate(o_r_rank = row_number()) %>%
+  arrange(-o_p_epa) %>%
+  mutate(o_p_rank = row_number()) %>%
+  arrange(d_r_epa) %>%
+  mutate(d_r_rank = row_number()) %>%
+  arrange(d_p_epa) %>%
+  mutate(d_p_rank = row_number(), 
+    avg_rank = round((o_r_rank+o_p_rank+d_r_rank+d_p_rank) / 4, 1)) %>%
+  arrange(avg_rank)
+  
+datatable(ranks_2024)
+```
+
+
+

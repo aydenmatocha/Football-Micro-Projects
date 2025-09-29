@@ -1,0 +1,63 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+# Load Packages
+```{r}
+library(rvest)
+library(dplyr)
+library(nflfastR)
+```
+
+# Load Play-By-Play Data
+```{r}
+pbp <- load_pbp(2025)
+```
+
+
+# Get Win% and PD Data
+```{r}
+url <- "https://www.profootballnetwork.com/nfl/standings/league/2025"
+
+page <- read_html(url)
+
+# grab *all* tables on the page
+tables <- page %>% html_nodes("table") %>% html_table(fill = TRUE)
+
+tables
+
+# Take the first (main) standings table
+standings <- tables[[1]]
+
+# Promote first row to headers
+colnames(standings) <- standings[1, ]
+
+# Drop the first row (now redundant)
+standings <- standings[-1, ]
+
+colnames(standings)[1] <- "team"
+
+standings <- standings %>%
+  mutate(pct = as.numeric(PCT), pf = as.numeric(PF), pa = as.numeric(PA)) %>%
+  select(team, pct, pf, pa) %>%
+  mutate(diff = pf-pa)
+
+standings
+```
+
+# Get Opponents
+```{r}
+get_opponents <- function(team_input) {
+  first_plays <- pbp %>%
+  filter(posteam == team_input) %>%         # Only Chargers plays
+  group_by(game_id) %>%                 # Group by game
+  slice_min(., order_by = play_id) %>%  # Take first play in each game
+  ungroup() %>%
+  select(defteam)
+return(first_plays)
+}
+
+get_opponents("LAC")
+```
+
